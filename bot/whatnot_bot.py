@@ -830,9 +830,17 @@ class WhatnotBot:
         Polls for a short while because the panel is rendered asynchronously.
         """
         lower = "translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
-        enter_selectors = [
-            f"//button[contains({lower}, 'enter giveaway')]",
-            f"//button[contains({lower}, 'join giveaway')]",
+        # The exact labels Whatnot uses, mirroring the strings the Android
+        # client matches on in whatnot-android/ (GiveawayAccessibilityService):
+        # "Enter Giveaway", "Follow and Enter", "Enter". Whatnot renders these
+        # as <button> or as role="button" containers, so match both.
+        enter_labels = ["enter giveaway", "follow and enter", "join giveaway"]
+        enter_selectors = []
+        for label in enter_labels:
+            enter_selectors.append(f"//button[contains({lower}, '{label}')]")
+            enter_selectors.append(f"//*[@role='button'][contains({lower}, '{label}')]")
+        enter_selectors += [
+            # Fall back to a bare Enter/Join inside the opened giveaway panel.
             f"//*[@role='dialog']//button[contains({lower}, 'enter')]",
             f"//*[@role='dialog']//button[contains({lower}, 'join')]",
             f"//button[normalize-space({lower})='enter']",
