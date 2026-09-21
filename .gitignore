@@ -21,3 +21,11 @@ env/
 .DS_Store
 .idea/
 .vscode/
+
+# Android / Gradle
+.gradle/
+local.properties
+*.apk
+*.aab
+captures/
+.cxx/
